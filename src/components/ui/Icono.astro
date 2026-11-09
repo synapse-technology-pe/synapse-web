@@ -1,0 +1,29 @@
+---
+// Inserta un ícono SVG de src/assets/iconos/ por su nombre.
+// Glifos de interfaz (Lucide, ISC): nombre sin prefijo, p. ej. "arrow-right".
+// Logos de marcas (SVG Logos, CC0): "oracle", "azure".
+const archivos = import.meta.glob("../../assets/iconos/*.svg", { query: "?raw", import: "default", eager: true }) as Record<
+  string,
+  string
+>;
+
+interface Props {
+  nombre: string;
+  clase?: string;
+  etiqueta?: string; // texto para lectores de pantalla; sin él, el ícono es decorativo
+}
+
+const { nombre, clase = "icono", etiqueta } = Astro.props;
+const clave = Object.keys(archivos).find((k) => k.endsWith(`/ui-${nombre}.svg`) || k.endsWith(`/${nombre}.svg`));
+if (!clave) throw new Error(`Ícono no encontrado: ${nombre}`);
+
+const accesible = etiqueta ? `role="img" aria-label="${etiqueta}"` : `aria-hidden="true" focusable="false"`;
+const svg = archivos[clave]
+  .replace(/\sclass="[^"]*"/, "")
+  .replace(/\srole="[^"]*"/, "")
+  .replace(/\saria-label="[^"]*"/, "")
+  .replace(/\swidth="[^"]*"\sheight="[^"]*"/, "")
+  .replace("<svg", `<svg class="${clase}" ${accesible}`);
+---
+
+<Fragment set:html={svg} />

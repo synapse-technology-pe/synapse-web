@@ -1,0 +1,203 @@
+---
+// Cómo trabajamos: cinco pasos en un carril horizontal que avanza con el scroll (vertical en celular).
+import Icono from "../../components/ui/Icono.astro";
+import { pasos } from "../../data/proceso";
+
+const iconos: Record<string, string> = {
+  conversacion: "messages-square",
+  diseno: "pen-tool",
+  codigo: "code-xml",
+  cohete: "rocket",
+  soporte: "life-buoy",
+};
+---
+
+<section class="proceso" id="proceso" data-proceso aria-labelledby="proceso-titulo">
+  <div class="proceso__escenario" data-proceso-escenario>
+    <div class="contenedor proceso__cabeza">
+      <p class="etiqueta">Proceso</p>
+      <h2 class="titulo-seccion" id="proceso-titulo">Cómo trabajamos contigo</h2>
+      <p class="texto-seccion">Un proceso claro de cinco pasos, con avances que revisas en cada etapa.</p>
+    </div>
+    <div class="proceso__ventana">
+      <div class="proceso__carril" data-proceso-carril>
+        <div class="proceso__linea" aria-hidden="true"><span data-proceso-linea></span></div>
+        <ol class="proceso__pasos">
+          {
+            pasos.map((p, i) => (
+              <li class="paso tarjeta tarjeta--luz" data-paso>
+                <div class="paso__cabeza">
+                  <span class="paso__num">0{i + 1}</span>
+                  <span class="paso__icono">
+                    <Icono nombre={iconos[p.icono]} />
+                  </span>
+                </div>
+                <h3 class="paso__titulo">{p.titulo}</h3>
+                <p class="paso__texto">{p.texto}</p>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .proceso {
+    position: relative;
+    background: var(--fondo-2);
+    border-block: 1px solid var(--linea);
+  }
+  .proceso__escenario {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 100vh;
+    min-height: 100svh;
+    padding-block: calc(var(--nav-alto) + 32px) 64px;
+    overflow: hidden;
+  }
+  .proceso__ventana {
+    margin-top: clamp(40px, 7vh, 72px);
+    padding-inline: max(var(--margen), calc((100vw - var(--ancho)) / 2));
+  }
+  .proceso__carril {
+    position: relative;
+    width: max-content;
+    padding-top: 34px;
+  }
+  .proceso__linea {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 2px;
+    background: var(--linea-fuerte);
+  }
+  .proceso__linea span {
+    position: absolute;
+    inset: 0;
+    background: var(--degradado-rojo);
+    box-shadow: 0 0 16px var(--brillo-rojo);
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+  .proceso__pasos {
+    display: flex;
+    gap: 24px;
+  }
+  .paso {
+    position: relative;
+    width: clamp(280px, 26vw, 360px);
+    padding: 30px 28px 34px;
+  }
+  .paso::after {
+    content: "";
+    position: absolute;
+    left: 28px;
+    top: -41px;
+    width: 14px;
+    height: 14px;
+    border: 2px solid var(--linea-fuerte);
+    border-radius: 50%;
+    background: var(--fondo-2);
+    transition:
+      background-color 0.4s,
+      border-color 0.4s,
+      box-shadow 0.4s;
+  }
+  .paso.activo::after {
+    border-color: var(--rojo);
+    background: var(--rojo);
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--rojo) 20%, transparent);
+  }
+  .paso__cabeza {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .paso__num {
+    font-family: var(--fuente-titulos);
+    font-size: 3.4rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.05em;
+    color: transparent;
+    -webkit-text-stroke: 1.4px var(--linea-fuerte);
+    transition: -webkit-text-stroke-color 0.4s, color 0.4s;
+  }
+  .paso.activo .paso__num {
+    -webkit-text-stroke-color: var(--rojo);
+  }
+  .paso__icono {
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+    background: var(--superficie-2);
+    color: var(--texto-2);
+    transition:
+      background-color 0.4s,
+      color 0.4s;
+  }
+  .paso.activo .paso__icono {
+    background: color-mix(in srgb, var(--rojo) 16%, transparent);
+    color: var(--rojo-texto);
+  }
+  .paso__titulo {
+    margin-top: 28px;
+    font-size: 2rem;
+    letter-spacing: -0.025em;
+  }
+  .paso__texto {
+    margin-top: 10px;
+    color: var(--texto-2);
+  }
+
+  @media (max-width: 899px) {
+    .proceso__carril {
+      width: auto;
+      padding-top: 0;
+      padding-left: 34px;
+    }
+    .proceso__linea {
+      left: 6px;
+      right: auto;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      height: auto;
+    }
+    .proceso__linea span {
+      transform: scaleY(0);
+      transform-origin: center top;
+    }
+    .proceso__pasos {
+      flex-direction: column;
+      gap: 16px;
+    }
+    .paso {
+      width: auto;
+    }
+    .paso::after {
+      left: -35px;
+      top: 34px;
+    }
+    .paso__num {
+      font-size: 2.6rem;
+    }
+    .proceso__ventana {
+      padding-inline: var(--margen);
+    }
+  }
+  :global(html:not(.js)) .proceso__carril,
+  :global(html.movimiento-reducido) .proceso__carril {
+    width: auto;
+  }
+  :global(html:not(.js)) .proceso__pasos,
+  :global(html.movimiento-reducido) .proceso__pasos {
+    flex-wrap: wrap;
+  }
+</style>

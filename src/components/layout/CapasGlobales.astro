@@ -1,0 +1,179 @@
+---
+// Capas fijas de toda la página: barra de progreso, cursor, grano y reproductor de video.
+import Icono from "../ui/Icono.astro";
+import { enlaceWhatsapp } from "../../data/sitio";
+
+const whatsapp = enlaceWhatsapp();
+---
+
+<div class="progreso" aria-hidden="true"><span data-progreso></span></div>
+<div class="grano" aria-hidden="true"></div>
+
+<div class="cursor cursor--oculto" aria-hidden="true" data-cursor-raiz>
+  <span class="cursor__aro"><span class="cursor__texto" data-cursor-texto></span></span>
+  <span class="cursor__punto"></span>
+</div>
+
+{
+  whatsapp && (
+    <a class="wa-flotante" href={whatsapp} target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp">
+      <Icono nombre="whatsapp" clase="wa-flotante__logo" />
+    </a>
+  )
+}
+
+<dialog class="modal-video" data-modal-video aria-label="Reproductor de video">
+  <div class="modal-video__caja">
+    <button class="modal-video__cerrar" type="button" data-modal-cerrar aria-label="Cerrar video">
+      <Icono nombre="x" />
+    </button>
+    <video class="modal-video__video" controls playsinline preload="none" data-modal-reproductor></video>
+  </div>
+</dialog>
+
+<style>
+  .progreso {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 110;
+    height: 2px;
+    pointer-events: none;
+  }
+  .progreso span {
+    display: block;
+    height: 100%;
+    background: var(--degradado-rojo);
+    box-shadow: 0 0 12px var(--brillo-rojo);
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+
+  .cursor {
+    display: none;
+  }
+  @media (pointer: fine) {
+    :global(html.js:not(.movimiento-reducido)) .cursor {
+      display: block;
+      position: fixed;
+      left: 0;
+      top: 0;
+      z-index: 120;
+      pointer-events: none;
+    }
+  }
+  .cursor__punto,
+  .cursor__aro {
+    position: absolute;
+    left: 0;
+    top: 0;
+    border-radius: 50%;
+    translate: -50% -50%;
+  }
+  .cursor__punto {
+    width: 6px;
+    height: 6px;
+    background: var(--rojo-vivo);
+  }
+  .cursor__aro {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border: 1px solid color-mix(in srgb, var(--texto) 35%, transparent);
+    transition:
+      width 0.35s var(--ease-salida),
+      height 0.35s var(--ease-salida),
+      background-color 0.3s,
+      border-color 0.3s,
+      opacity 0.3s;
+  }
+  :global(.cursor--enlace) .cursor__aro {
+    width: 56px;
+    height: 56px;
+    border-color: var(--rojo);
+  }
+  :global(.cursor--ver) .cursor__aro {
+    width: 84px;
+    height: 84px;
+    border-color: transparent;
+    background: var(--rojo);
+  }
+  :global(.cursor--oculto) .cursor__aro,
+  :global(.cursor--oculto) .cursor__punto {
+    opacity: 0;
+  }
+  .cursor__texto {
+    color: #fff;
+    font-size: 0.8rem;
+    font-weight: 700;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  :global(.cursor--ver) .cursor__texto {
+    opacity: 1;
+  }
+
+  .wa-flotante {
+    position: fixed;
+    right: max(18px, env(safe-area-inset-right, 0px));
+    bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+    z-index: 105;
+    display: grid;
+    place-items: center;
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.35);
+    transition: transform 0.35s var(--ease-salida);
+  }
+  .wa-flotante:hover {
+    transform: translateY(-3px) scale(1.05);
+  }
+  .wa-flotante :global(.wa-flotante__logo) {
+    width: 32px;
+    height: 32px;
+  }
+  .modal-video {
+    width: min(92vw, 1100px);
+    max-height: 92vh;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radio-l);
+    background: #000;
+    overflow: visible;
+  }
+  .modal-video.modal-video--vertical {
+    width: min(92vw, calc(86vh * 9 / 16));
+  }
+  .modal-video::backdrop {
+    background: rgba(0, 0, 0, 0.82);
+    backdrop-filter: blur(8px);
+  }
+  .modal-video__caja {
+    position: relative;
+  }
+  .modal-video__video {
+    width: 100%;
+    max-height: 86vh;
+    border-radius: var(--radio-l);
+    background: #000;
+  }
+  .modal-video__cerrar {
+    position: absolute;
+    top: -52px;
+    right: 0;
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+  }
+  .modal-video__cerrar:hover {
+    background: var(--rojo);
+    border-color: var(--rojo);
+  }
+</style>

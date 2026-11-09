@@ -1,0 +1,85 @@
+---
+// Portafolio "Lo que hemos construido": carrusel horizontal (arrastrar con el mouse, deslizar con el dedo
+// o usar las flechas). "Ver más" abre la ficha del proyecto con problema, solución, stack y video o enlace.
+import Icono from "../../components/ui/Icono.astro";
+import { proyectos } from "../../data/proyectos";
+import "./proyectos.css";
+
+const total = String(proyectos.length).padStart(2, "0");
+---
+
+<section class="proyectos" id="proyectos" data-proyectos aria-labelledby="proyectos-titulo">
+  <div class="contenedor proyectos__cabeza">
+    <div>
+      <p class="etiqueta">Portafolio / 2026</p>
+      <p class="proyectos__sub">/ Cada pieza diseñada y desarrollada a medida /</p>
+    </div>
+    <h2 class="proyectos__titulo" id="proyectos-titulo">
+      Lo que hemos construido <span class="acento">habla</span> por nosotros.
+    </h2>
+    <div class="proyectos__control">
+      <span class="proyectos__pista-texto">Desliza para descubrir</span>
+      <span class="proyectos__contador"><b data-proyectos-actual>01</b> / {total}</span>
+      <div class="proyectos__flechas">
+        <button type="button" class="proyectos__flecha" data-proyectos-anterior aria-label="Proyecto anterior">
+          <Icono nombre="arrow-left" />
+        </button>
+        <button type="button" class="proyectos__flecha" data-proyectos-siguiente aria-label="Proyecto siguiente">
+          <Icono nombre="arrow-right" />
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="proyectos__pista" data-proyectos-pista tabindex="0" aria-label="Proyectos: arrastra o usa las flechas para ver más">
+    {
+      proyectos.map((p, i) => (
+        <article class="proyecto" data-proyecto>
+          <button class="proyecto__media" type="button" data-abrir-proyecto={i} aria-label={`Ver más de ${p.nombre}`}>
+            <img src={p.imagen} alt={`Captura de ${p.nombre}`} width="1280" height="800" loading="lazy" decoding="async" draggable="false" />
+            {p.video && (
+              <span class="proyecto__video">
+                <Icono nombre="play" clase="icono icono-relleno" /> Video
+              </span>
+            )}
+          </button>
+          <div class="proyecto__info">
+            <span class="proyecto__num">{String(i + 1).padStart(2, "0")}</span>
+            <div class="proyecto__texto">
+              <h3 class="proyecto__nombre">{p.nombre}</h3>
+              <p class="proyecto__rubro">{p.rubro}</p>
+              <p class="proyecto__resumen">{p.resumen}</p>
+            </div>
+            <button class="proyecto__mas" type="button" data-abrir-proyecto={i}>
+              Ver más <Icono nombre="plus" />
+            </button>
+          </div>
+        </article>
+      ))
+    }
+  </div>
+</section>
+
+<dialog class="ficha" data-ficha aria-labelledby="ficha-nombre">
+  <button class="ficha__cerrar" type="button" data-ficha-cerrar aria-label="Cerrar">
+    <Icono nombre="x" />
+  </button>
+  <div class="ficha__media" data-ficha-media></div>
+  <div class="ficha__cuerpo">
+    <span class="ficha__num" data-ficha-num></span>
+    <h3 class="ficha__nombre" id="ficha-nombre" data-ficha-nombre></h3>
+    <p class="ficha__rubro" data-ficha-rubro></p>
+    <div data-ficha-detalle></div>
+    <ul class="ficha__stack" data-ficha-stack></ul>
+    <div class="ficha__acciones">
+      <a class="boton boton--secundario" data-ficha-url target="_blank" rel="noopener">
+        Visitar el sitio <Icono nombre="arrow-up-right" clase="icono" />
+      </a>
+      <a class="boton boton--primario" href="#contacto" data-ficha-cotizar>
+        Quiero algo así <Icono nombre="arrow-right" clase="icono boton__flecha" />
+      </a>
+    </div>
+  </div>
+</dialog>
+
+<script type="application/json" id="datos-proyectos" set:html={JSON.stringify(proyectos)} />

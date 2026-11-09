@@ -1,0 +1,147 @@
+---
+// Reseñas de clientes en dos filas que se deslizan en sentidos opuestos con el scroll.
+// Solo se publican reseñas reales (ver src/data/resenas.ts).
+import Icono from "../../components/ui/Icono.astro";
+import { resenasVisibles } from "../../data/resenas";
+
+const lista = resenasVisibles;
+const iniciales = (n: string) =>
+  n
+    .split(" ")
+    .slice(0, 2)
+    .map((p) => p[0])
+    .join("")
+    .toUpperCase();
+// Se repiten para que cada fila cubra el ancho aunque haya pocas.
+const veces = Math.max(2, Math.ceil(8 / Math.max(1, lista.length)));
+const fila = Array.from({ length: veces }, () => lista).flat();
+const mitad = Math.ceil(lista.length / 2);
+const fila2 = Array.from({ length: veces }, () => [...lista.slice(mitad), ...lista.slice(0, mitad)]).flat();
+---
+
+{
+  lista.length > 0 && (
+    <section class="resenas seccion" id="resenas" data-resenas aria-labelledby="resenas-titulo">
+      <div class="contenedor resenas__cabeza">
+        <p class="etiqueta">Reseñas</p>
+        <h2 class="titulo-seccion" id="resenas-titulo">
+          Lo que dicen nuestros clientes
+        </h2>
+      </div>
+      <ul class="sr-only">
+        {lista.map((r) => (
+          <li>
+            {r.texto} — {r.nombre}, {r.cargo}, {r.empresa}
+          </li>
+        ))}
+      </ul>
+      {[fila, fila2].map((items, f) => (
+        <div class="resenas__fila" data-resenas-fila={f === 0 ? "izquierda" : "derecha"} aria-hidden="true">
+          <div class="resenas__pista">
+            {items.map((r) => (
+              <figure class="resena tarjeta">
+                <div class="resena__estrellas" aria-label={`${r.estrellas} de 5`}>
+                  {Array.from({ length: r.estrellas }, () => (
+                    <Icono nombre="star" clase="icono icono-relleno" />
+                  ))}
+                </div>
+                <blockquote class="resena__texto">{r.texto}</blockquote>
+                <figcaption class="resena__autor">
+                  <span class="resena__avatar">{iniciales(r.nombre)}</span>
+                  <span>
+                    <strong>{r.nombre}</strong>
+                    <small>
+                      {r.cargo} · {r.empresa}
+                    </small>
+                  </span>
+                  {r.ejemplo && <span class="resena__ejemplo">Ejemplo</span>}
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </div>
+      ))}
+    </section>
+  )
+}
+
+<style>
+  .resenas {
+    overflow: hidden;
+    background: var(--fondo-2);
+    border-block: 1px solid var(--linea);
+  }
+  .resenas__cabeza {
+    margin-bottom: clamp(40px, 6vw, 72px);
+  }
+  .resenas__fila {
+    display: flex;
+  }
+  .resenas__fila + .resenas__fila {
+    margin-top: 20px;
+  }
+  .resenas__pista {
+    display: flex;
+    flex: none;
+    gap: 20px;
+    padding-inline: 10px;
+  }
+  .resena {
+    display: flex;
+    flex-direction: column;
+    width: clamp(290px, 30vw, 420px);
+    margin: 0;
+    padding: 28px;
+  }
+  .resena__estrellas {
+    display: flex;
+    gap: 3px;
+    color: var(--rojo);
+  }
+  .resena__estrellas :global(.icono) {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+  }
+  .resena__texto {
+    flex: 1;
+    margin: 18px 0 0;
+    font-size: 1.04rem;
+    line-height: 1.55;
+  }
+  .resena__autor {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 24px;
+  }
+  .resena__autor strong {
+    display: block;
+    font-size: 0.95rem;
+  }
+  .resena__autor small {
+    display: block;
+    color: var(--texto-3);
+    font-size: 0.82rem;
+  }
+  .resena__avatar {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    flex: none;
+    border-radius: 50%;
+    background: var(--degradado-rojo);
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.85rem;
+  }
+  .resena__ejemplo {
+    margin-left: auto;
+    padding: 3px 10px;
+    border: 1px dashed var(--linea-fuerte);
+    border-radius: var(--radio-pildora);
+    font-size: 0.72rem;
+    color: var(--texto-3);
+  }
+</style>

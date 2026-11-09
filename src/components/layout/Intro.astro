@@ -1,0 +1,88 @@
+---
+// Intro con el logo: las 5 esquirlas del hexágono se atraen y chocan, la luz recorre los circuitos,
+// caen el hexágono chico y las burbujas, entra el nombre y la página se abre por la silueta del logo.
+// Solo en la primera visita de la sesión.
+// Se salta con un clic o una tecla. La animación vive en src/scripts/intro.ts.
+import Logo from "../ui/Logo.astro";
+---
+
+<div class="intro" data-intro aria-hidden="true">
+  <svg class="intro__velo" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <mask id="intro-mascara" maskUnits="userSpaceOnUse">
+        <rect x="0" y="0" width="100%" height="100%" fill="white"></rect>
+        <polygon data-intro-hueco fill="black" points="0,0 0,0 0,0"></polygon>
+      </mask>
+    </defs>
+    <rect class="intro__fondo" x="0" y="0" width="100%" height="100%" mask="url(#intro-mascara)"></rect>
+    <polygon class="intro__aro" data-intro-aro points="0,0 0,0 0,0"></polygon>
+  </svg>
+  <div class="intro__centro" data-intro-centro>
+    <Logo id="intro" clase="intro__logo" animable />
+    <div class="intro__barra"><span data-intro-barra></span></div>
+  </div>
+</div>
+
+<style>
+  .intro {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 150;
+    cursor: pointer;
+  }
+  :global(html.con-intro) .intro {
+    display: block;
+    /* Seguro sin JavaScript: la intro se retira sola */
+    animation: intro-fuera 0.4s 7s forwards;
+  }
+  @keyframes intro-fuera {
+    to {
+      opacity: 0;
+      visibility: hidden;
+    }
+  }
+  .intro__velo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .intro__fondo {
+    fill: var(--fondo);
+  }
+  .intro__aro {
+    fill: none;
+    stroke: var(--rojo);
+    stroke-width: 2;
+    opacity: 0;
+  }
+  .intro__centro {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: min(86vw, 720px);
+    translate: -50% -50%;
+    opacity: 0;
+  }
+  .intro__centro :global(.intro__logo) {
+    width: 100%;
+    height: auto;
+  }
+  .intro__barra {
+    position: relative;
+    height: 2px;
+    margin: 34px auto 0;
+    width: 46%;
+    border-radius: 2px;
+    background: var(--linea);
+    overflow: hidden;
+  }
+  .intro__barra span {
+    position: absolute;
+    inset: 0;
+    background: var(--degradado-rojo);
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+</style>

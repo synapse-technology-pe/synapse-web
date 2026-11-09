@@ -1,0 +1,125 @@
+---
+// Catálogo: los 12 tipos de software que hacemos, con íconos 3D y tarjetas que se inclinan hacia el puntero.
+import Icono3D from "../../components/ui/Icono3D.astro";
+import { catalogo } from "../../data/catalogo";
+---
+
+<section class="catalogo seccion" id="servicios" data-catalogo aria-labelledby="catalogo-titulo">
+  <div class="contenedor">
+    <div class="catalogo__cabeza">
+      <p class="etiqueta">Servicios</p>
+      <h2 class="titulo-seccion catalogo__titulo" id="catalogo-titulo">
+        Todo el software que tu <em class="acento">empresa</em> necesita
+      </h2>
+      <p class="texto-seccion">
+        De una página web a un sistema completo con inteligencia artificial: lo diseñamos, lo programamos y lo
+        mantenemos funcionando.
+      </p>
+    </div>
+    <ul class="catalogo__rejilla">
+      {
+        catalogo.map((s, i) => (
+          <li class="servicio" data-servicio data-tilt>
+            <div class="servicio__cara tarjeta tarjeta--luz">
+              <div class="servicio__arriba">
+                <span class="servicio__icono">
+                  <Icono3D nombre={s.icono} />
+                </span>
+                <span class="servicio__num">{String(i + 1).padStart(2, "0")}</span>
+              </div>
+              <h3 class="servicio__titulo">{s.titulo}</h3>
+              <p class="servicio__texto">{s.texto}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .catalogo__cabeza {
+    display: grid;
+    justify-items: start;
+  }
+  .catalogo__titulo {
+    max-width: 13ch;
+  }
+  .catalogo__rejilla {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+    margin-top: clamp(44px, 6vw, 80px);
+  }
+  .servicio {
+    --rx: 0deg;
+    --ry: 0deg;
+    perspective: 900px;
+  }
+  .servicio__cara {
+    height: 100%;
+    padding: 26px 24px 28px;
+    transform-style: preserve-3d;
+    transform: rotateX(var(--rx)) rotateY(var(--ry));
+    transition:
+      transform 0.5s var(--ease-salida),
+      border-color 0.3s,
+      background-color 0.4s;
+  }
+  .servicio:hover .servicio__cara {
+    border-color: color-mix(in srgb, var(--rojo) 45%, var(--linea));
+  }
+  .servicio__arriba {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    transform-style: preserve-3d;
+  }
+  .servicio__icono {
+    display: block;
+    transform-style: preserve-3d;
+    transform: translateZ(26px) rotateX(14deg) rotateY(-22deg);
+    transition: transform 0.6s var(--ease-salida);
+  }
+  .servicio:hover .servicio__icono {
+    transform: translateZ(46px) rotateX(8deg) rotateY(-10deg) scale(1.06);
+  }
+  .servicio__num {
+    font-family: var(--fuente-mono);
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--texto-3);
+  }
+  .servicio__titulo {
+    margin-top: 30px;
+    font-size: 1.85rem;
+    letter-spacing: -0.03em;
+    transform: translateZ(14px);
+  }
+  .servicio__texto {
+    margin-top: 10px;
+    font-size: 0.94rem;
+    line-height: 1.55;
+    color: var(--texto-2);
+    transform: translateZ(8px);
+  }
+  @media (max-width: 1080px) {
+    .catalogo__rejilla {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 820px) {
+    .catalogo__rejilla {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 520px) {
+    .catalogo__rejilla {
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+    .servicio__titulo {
+      margin-top: 20px;
+    }
+  }
+</style>

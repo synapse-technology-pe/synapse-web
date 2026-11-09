@@ -1,0 +1,139 @@
+---
+// Tecnologías: dos anillos 3D de logos reales que giran en sentidos opuestos con el scroll.
+import Icono from "../../components/ui/Icono.astro";
+import { tecnologias } from "../../data/tecnologias";
+
+const mitad = Math.ceil(tecnologias.length / 2);
+const anillos = [tecnologias.slice(0, mitad), tecnologias.slice(mitad)];
+---
+
+<section class="tecno" id="tecnologias" data-tecno aria-labelledby="tecno-titulo">
+  <div class="contenedor tecno__cabeza">
+    <p class="etiqueta">Tecnologías</p>
+    <h2 class="titulo-seccion tecno__titulo" id="tecno-titulo">
+      La tecnología de las <span class="acento">empresas más grandes</span> del mundo
+    </h2>
+    <p class="texto-seccion">
+      Usamos las mismas herramientas y nubes que las compañías líderes, elegidas según lo que necesita tu proyecto.
+    </p>
+    <p class="tecno__ayuda"><span aria-hidden="true">←</span> Arrastra para girar <span aria-hidden="true">→</span></p>
+  </div>
+
+  <ul class="sr-only">
+    {tecnologias.map((t) => <li>{t.nombre}</li>)}
+  </ul>
+
+  <div class="tecno__escena" data-tecno-escena tabindex="0" role="img" aria-label="Anillos con los logos de las tecnologías que usamos. Arrastra para girarlos.">
+    {
+      anillos.map((lista, a) => (
+        <div class="tecno__anillo" data-tecno-anillo={a} style={`--n:${lista.length}`}>
+          {lista.map((t, i) => (
+            <div class="tecno__ficha" style={`--i:${i}`}>
+              <Icono nombre={t.icono} clase="tecno__logo" />
+              <span>{t.nombre}</span>
+            </div>
+          ))}
+        </div>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .tecno {
+    position: relative;
+    padding-block: clamp(96px, 11vw, 150px) clamp(56px, 7vw, 96px);
+    overflow: hidden;
+    background:
+      radial-gradient(ellipse 60% 45% at 50% 70%, color-mix(in srgb, var(--rojo) 12%, transparent), transparent 70%),
+      var(--fondo);
+  }
+  .tecno__cabeza {
+    display: grid;
+    justify-items: center;
+    text-align: center;
+  }
+  .tecno__titulo {
+    max-width: 18ch;
+  }
+  .tecno .texto-seccion {
+    margin-inline: auto;
+  }
+  .tecno__escena {
+    --ficha-w: clamp(118px, 11vw, 158px);
+    --ficha-h: clamp(76px, 7vw, 96px);
+    --sep: 18px;
+    position: relative;
+    height: calc(var(--ficha-h) * 2 + 230px);
+    cursor: grab;
+    touch-action: pan-y;
+    user-select: none;
+    outline-offset: -4px;
+    margin-top: clamp(40px, 6vw, 72px);
+    perspective: 1500px;
+    perspective-origin: 50% 30%;
+    mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+  }
+  .tecno__escena.arrastrando {
+    cursor: grabbing;
+  }
+  .tecno__ayuda {
+    margin-top: 22px;
+    font-family: var(--fuente-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--texto-3);
+  }
+  .tecno__anillo {
+    --radio: calc((var(--ficha-w) + var(--sep)) * var(--n) / 6.2832);
+    --giro: 0deg;
+    position: absolute;
+    left: 50%;
+    width: var(--ficha-w);
+    height: var(--ficha-h);
+    margin-left: calc(var(--ficha-w) / -2);
+    transform-style: preserve-3d;
+    transform: translateZ(calc(var(--radio) * -1)) rotateX(-10deg) rotateY(var(--giro));
+  }
+  .tecno__anillo[data-tecno-anillo="0"] {
+    top: 34px;
+  }
+  .tecno__anillo[data-tecno-anillo="1"] {
+    top: calc(var(--ficha-h) + 100px);
+  }
+  .tecno__ficha {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 8px;
+    border-radius: 18px;
+    background: #fff;
+    border: 1px solid rgba(10, 10, 12, 0.08);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+    color: #3f3f46;
+    font-size: 0.72rem;
+    font-weight: 700;
+    backface-visibility: hidden;
+    transform: rotateY(calc(var(--i) * 360deg / var(--n))) translateZ(var(--radio));
+  }
+  :global([data-tema="claro"]) .tecno__ficha {
+    box-shadow: 0 14px 30px rgba(10, 10, 12, 0.1);
+  }
+  .tecno__ficha :global(.tecno__logo) {
+    width: auto;
+    height: 30px;
+    max-width: 70%;
+  }
+  @media (max-width: 760px) {
+    .tecno__escena {
+      --sep: 12px;
+      mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+    }
+    .tecno__ficha :global(.tecno__logo) {
+      height: 24px;
+    }
+  }
+</style>

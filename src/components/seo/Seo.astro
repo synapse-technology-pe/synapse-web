@@ -1,0 +1,45 @@
+---
+// Metadatos para buscadores y redes sociales.
+import { sitio } from "../../data/sitio";
+
+interface Props {
+  titulo?: string;
+  descripcion?: string;
+  imagen?: string; // ruta dentro de public/
+  indexar?: boolean;
+}
+
+const { titulo = sitio.titulo, descripcion = sitio.descripcion, imagen = "/og.jpg", indexar = true } = Astro.props;
+const base = Astro.site;
+const canonica = base ? new URL(Astro.url.pathname, base).href : null;
+const imagenAbs = base ? new URL(imagen, base).href : imagen;
+---
+
+<title>{titulo}</title>
+<meta name="description" content={descripcion} />
+<meta name="robots" content={indexar ? "index, follow, max-image-preview:large" : "noindex"} />
+{canonica && <link rel="canonical" href={canonica} />}
+
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="es_PE" />
+<meta property="og:site_name" content={sitio.nombre} />
+<meta property="og:title" content={titulo} />
+<meta property="og:description" content={descripcion} />
+{canonica && <meta property="og:url" content={canonica} />}
+<meta property="og:image" content={imagenAbs} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Synapse, desarrollo de software a medida en Lima" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={titulo} />
+<meta name="twitter:description" content={descripcion} />
+<meta name="twitter:image" content={imagenAbs} />
+
+<meta name="theme-color" content="#050506" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="manifest" href="/site.webmanifest" />
+{base && <link rel="sitemap" href="/sitemap.xml" />}

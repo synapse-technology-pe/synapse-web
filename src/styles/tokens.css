@@ -1,0 +1,79 @@
+/* Tokens de diseño de Synapse: colores, tipografía, medidas y curvas.
+   El tema oscuro es el de la marca; el claro se activa con data-tema="claro" en <html>. */
+
+:root {
+  /* Marca */
+  --rojo: #e5121b;
+  --rojo-vivo: #ff2a2a;
+  --rojo-oscuro: #7d1616;
+  --degradado-rojo: linear-gradient(90deg, var(--rojo-oscuro), var(--rojo-vivo) 70%, var(--naranja-logo));
+  /* Colores del logo (rojo → naranja) */
+  --rojo-logo: #fb0403;
+  --naranja-logo: #fd9a02;
+  --degradado-logo: linear-gradient(35deg, #fb0302 25%, #fd9a02);
+
+  /* Tipografía: títulos gigantes en Anton (condensada, mayúsculas), texto en Geist y etiquetas en Geist Mono */
+  --fuente-titulos: "Anton", "Impact", "Arial Narrow", sans-serif;
+  --fuente-texto: "Geist Variable", "Geist", "Segoe UI", system-ui, sans-serif;
+  --fuente-mono: "Geist Mono Variable", "Geist Mono", ui-monospace, "Consolas", monospace;
+  --t-h1: clamp(3.6rem, 1rem + 8.6vw, 10rem);
+  --t-h2: clamp(3rem, 0.8rem + 7vw, 8.6rem);
+  --t-h3: clamp(1.6rem, 1.2rem + 1.4vw, 2.6rem);
+  --t-grande: clamp(1.05rem, 0.98rem + 0.3vw, 1.25rem);
+  --t-base: 1rem;
+  --t-chica: 0.875rem;
+
+  /* Medidas */
+  --ancho: 1280px;
+  --margen: clamp(20px, 5vw, 64px);
+  --nav-alto: 76px;
+  --radio-s: 12px;
+  --radio: 20px;
+  --radio-l: 28px;
+  --radio-pildora: 999px;
+
+  /* Movimiento */
+  --ease-salida: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-suave: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* Tema oscuro (por defecto) */
+  --fondo: #050506;
+  --fondo-2: #0a0a0c;
+  --superficie: #101013;
+  --superficie-2: #17171b;
+  --superficie-3: #1f1f24;
+  --linea: rgba(255, 255, 255, 0.08);
+  --linea-fuerte: rgba(255, 255, 255, 0.16);
+  --texto: #f4f4f5;
+  --texto-2: #a1a1aa;
+  --texto-3: #8b8b94;
+  --tinta: #f4f4f5;
+  --rojo-texto: #ff4a4a;
+  --sombra: 0 24px 70px rgba(0, 0, 0, 0.55);
+  --sombra-suave: 0 10px 30px rgba(0, 0, 0, 0.35);
+  --brillo-rojo: rgba(229, 18, 27, 0.38);
+  --velo: rgba(5, 5, 6, 0.72);
+  --pulso-logo: #ffc46b;
+  color-scheme: dark;
+}
+
+:root[data-tema="claro"] {
+  --fondo: #f5f5f3;
+  --fondo-2: #ebebe8;
+  --superficie: #ffffff;
+  --superficie-2: #f1f1ef;
+  --superficie-3: #e6e6e3;
+  --linea: rgba(10, 10, 12, 0.09);
+  --linea-fuerte: rgba(10, 10, 12, 0.18);
+  --texto: #0b0b0d;
+  --texto-2: #52525b;
+  --texto-3: #63636b;
+  --tinta: #0b0b0d;
+  --rojo-texto: #c8101a;
+  --sombra: 0 24px 60px rgba(10, 10, 12, 0.14);
+  --sombra-suave: 0 10px 30px rgba(10, 10, 12, 0.08);
+  --brillo-rojo: rgba(229, 18, 27, 0.24);
+  --velo: rgba(245, 245, 243, 0.78);
+  --pulso-logo: #ff5a00;
+  color-scheme: light;
+}

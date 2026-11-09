@@ -1,0 +1,176 @@
+---
+// Contacto: cotizador en 4 pasos (qué necesitas, presupuesto y plazo, tu idea, tus datos).
+// Al enviar arma un mensaje ordenado para WhatsApp (o correo si no hay número en src/data/sitio.ts).
+import Icono from "../../components/ui/Icono.astro";
+import { sitio, enlaceWhatsapp } from "../../data/sitio";
+import { tiposProyecto, plazos, situaciones, beneficios } from "../../data/contacto";
+import "./contacto.css";
+
+const whatsapp = enlaceWhatsapp();
+const canal = sitio.whatsapp ? "whatsapp" : sitio.correo ? "correo" : "ninguno";
+if (canal === "ninguno") {
+  console.warn("[Synapse] Falta configurar WhatsApp o correo en src/data/sitio.ts: el formulario no podrá enviar.");
+}
+---
+
+<section class="contacto seccion" id="contacto" data-contacto aria-labelledby="contacto-titulo">
+  <div class="contacto__brillo" aria-hidden="true"></div>
+  <div class="contenedor contacto__rejilla">
+    <div class="contacto__texto">
+      <p class="etiqueta">Cotiza tu proyecto</p>
+      <h2 class="contacto__titulo" id="contacto-titulo" data-contacto-titulo>
+        Cuéntanos qué vamos a <span class="acento">construir</span>
+      </h2>
+      <p class="texto-seccion">Son 3 pasos y menos de dos minutos. Tu solicitud nos llega al instante y te respondemos con los siguientes pasos.</p>
+      <ul class="contacto__beneficios">
+        {
+          beneficios.map((b) => (
+            <li>
+              <span>
+                <Icono nombre="check" />
+              </span>
+              {b}
+            </li>
+          ))
+        }
+      </ul>
+      {
+        (whatsapp || sitio.correo) && (
+          <ul class="contacto__directo">
+            {whatsapp && (
+              <li>
+                <a class="enlace" href={whatsapp} target="_blank" rel="noopener">
+                  <Icono nombre="message-circle" /> {sitio.whatsappVisible}
+                </a>
+              </li>
+            )}
+            {sitio.correo && (
+              <li>
+                <a class="enlace" href={`mailto:${sitio.correo}`}>
+                  <Icono nombre="mail" /> {sitio.correo}
+                </a>
+              </li>
+            )}
+          </ul>
+        )
+      }
+    </div>
+
+    <form class="cotizador" data-cotizador data-canal={canal} data-whatsapp={sitio.whatsapp} data-correo={sitio.correo} data-formsubmit={sitio.formsubmit} novalidate aria-labelledby="contacto-titulo">
+      <div class="cotizador__cabeza">
+        <span class="cotizador__paso" data-cotizador-num aria-live="polite">Paso 1 de 3</span>
+        <ol class="cotizador__puntos" aria-hidden="true">
+          <li class="activo">Proyecto</li>
+          <li>Idea</li>
+          <li>Datos</li>
+        </ol>
+        <div class="cotizador__barra"><span data-cotizador-barra></span></div>
+      </div>
+
+      <div class="cotizador__pasos">
+        <fieldset class="paso-form" data-paso>
+          <legend tabindex="-1">¿Qué quieres construir?</legend>
+          <p class="paso-form__ayuda">Puedes elegir varias opciones.</p>
+          <div class="opciones-tarjeta">
+            {
+              tiposProyecto.map((t) => (
+                <label class="opcion-tarjeta">
+                  <input type="checkbox" name="tipo" value={t.valor} />
+                  <span class="opcion-tarjeta__caja">
+                    <span class="opcion-tarjeta__icono">
+                      <Icono nombre={t.icono} />
+                    </span>
+                    {t.valor}
+                    <span class="opcion-tarjeta__marca">
+                      <Icono nombre="check" />
+                    </span>
+                  </span>
+                </label>
+              ))
+            }
+          </div>
+        </fieldset>
+
+        <fieldset class="paso-form" data-paso hidden>
+          <legend tabindex="-1">Cuéntanos tu idea</legend>
+          <p class="paso-form__aviso"><Icono nombre="wallet" /> Nos adaptamos a tu presupuesto: primero entendemos tu idea y luego te proponemos opciones.</p>
+          <div class="opciones-chip">
+            {
+              situaciones.map((s, i) => (
+                <label class="opcion-chip">
+                  <input type="radio" name="situacion" value={s} checked={i === 0} />
+                  <span>{s}</span>
+                </label>
+              ))
+            }
+          </div>
+          <label class="campo">
+            <span>¿Qué problema quieres resolver y para quién?</span>
+            <textarea name="idea" rows="6" required placeholder="Ejemplo: necesito un sistema para controlar el inventario de mis 3 tiendas y que los vendedores registren ventas desde el celular."></textarea>
+          </label>
+          <p class="paso-form__sub"><Icono nombre="calendar-clock" /> ¿Para cuándo lo necesitas? <small>(opcional)</small></p>
+          <div class="opciones-chip">
+            {
+              plazos.map((p) => (
+                <label class="opcion-chip">
+                  <input type="radio" name="plazo" value={p} />
+                  <span>{p}</span>
+                </label>
+              ))
+            }
+          </div>
+        </fieldset>
+
+        <fieldset class="paso-form" data-paso hidden>
+          <legend tabindex="-1">¿Cómo te contactamos?</legend>
+          <div class="campos-doble">
+            <label class="campo">
+              <span><Icono nombre="user-round" /> Nombre</span>
+              <input name="nombre" type="text" autocomplete="name" required placeholder="Tu nombre" />
+            </label>
+            <label class="campo">
+              <span><Icono nombre="building-2" /> Empresa</span>
+              <input name="empresa" type="text" autocomplete="organization" placeholder="Opcional" />
+            </label>
+            <label class="campo">
+              <span><Icono nombre="message-circle" /> WhatsApp o teléfono</span>
+              <input name="telefono" type="tel" autocomplete="tel" inputmode="tel" placeholder="Número con código de país" />
+            </label>
+            <label class="campo">
+              <span><Icono nombre="mail" /> Correo</span>
+              <input name="correo" type="email" autocomplete="email" placeholder="nombre@empresa.com" />
+            </label>
+          </div>
+          <div class="cotizador__resumen" data-cotizador-resumen></div>
+          <label class="consentimiento">
+            <input type="checkbox" name="consentimiento" required />
+            <span>Acepto que Synapse use estos datos solo para responder mi solicitud.</span>
+          </label>
+        </fieldset>
+      </div>
+
+      <input type="text" name="_honey" class="cotizador__trampa" tabindex="-1" autocomplete="off" aria-hidden="true" />
+      <div class="cotizador__exito" data-cotizador-exito hidden>
+        <span class="cotizador__exito-icono"><Icono nombre="check" /></span>
+        <h3>Solicitud recibida</h3>
+        <p data-cotizador-exito-texto>Ya nos llegó tu solicitud. Si quieres una respuesta más rápida, envíala también por WhatsApp.</p>
+        <a class="boton boton--primario" data-cotizador-whatsapp target="_blank" rel="noopener">
+          <Icono nombre="message-circle" clase="icono" /> Enviar también por WhatsApp
+        </a>
+      </div>
+      <p class="cotizador__nota" data-cotizador-nota aria-live="polite"></p>
+      <div class="cotizador__acciones">
+        <button class="boton boton--secundario" type="button" data-cotizador-atras hidden>
+          <Icono nombre="arrow-left" clase="icono" /> Atrás
+        </button>
+        <button class="boton boton--primario" type="button" data-cotizador-siguiente>
+          Siguiente <Icono nombre="arrow-right" clase="icono boton__flecha" />
+        </button>
+        <button class="boton boton--primario" type="submit" data-cotizador-enviar hidden>
+          Enviar solicitud
+          <Icono nombre="send" clase="icono" />
+        </button>
+      </div>
+    </form>
+  </div>
+</section>

@@ -1,0 +1,147 @@
+---
+// Pie de página con el logotipo gigante (sus letras suben al llegar) y los enlaces.
+import Logo from "../ui/Logo.astro";
+import { logotipo } from "../ui/logo-datos";
+import { sitio, navegacion, enlaceWhatsapp } from "../../data/sitio";
+import { servicios } from "../../data/servicios";
+
+const anio = 2026;
+const caja = logotipo.letrasCaja;
+const redes = Object.entries(sitio.redes).filter(([, url]) => url) as [string, string][];
+const nombresRedes: Record<string, string> = { tiktok: "TikTok", instagram: "Instagram", linkedin: "LinkedIn", facebook: "Facebook" };
+const whatsapp = enlaceWhatsapp();
+const enlaces = navegacion.filter((e) => ["#proyectos", "#servicios", "#tecnologias", "#proceso", "#preguntas"].includes(e.href));
+---
+
+<footer class="pie">
+  <div class="contenedor">
+    <div class="pie__rejilla">
+      <div class="pie__marca">
+        <Logo id="pie" clase="pie__logo" />
+        <p>Desarrollo de software a medida para empresas. Desde {sitio.ciudad}, {sitio.pais}.</p>
+      </div>
+      <div class="pie__col">
+        <h2 class="pie__titulo">Navegación</h2>
+        <ul>
+          {enlaces.map((e) => <li><a class="enlace" href={e.href}>{e.texto}</a></li>)}
+          <li><a class="enlace" href="#contacto">Contacto</a></li>
+        </ul>
+      </div>
+      <div class="pie__col">
+        <h2 class="pie__titulo">Servicios</h2>
+        <ul>
+          {servicios.map((s) => <li><a class="enlace" href="#servicios">{s.titulo}</a></li>)}
+        </ul>
+      </div>
+      <div class="pie__col">
+        <h2 class="pie__titulo">Contacto</h2>
+        <ul>
+          {whatsapp && <li><a class="enlace" href={whatsapp} target="_blank" rel="noopener">WhatsApp {sitio.whatsappVisible}</a></li>}
+          {sitio.correo && <li><a class="enlace" href={`mailto:${sitio.correo}`}>{sitio.correo}</a></li>}
+          <li><a class="enlace" href="#contacto">Formulario de cotización</a></li>
+          {
+            redes.map(([red, url]) => (
+              <li>
+                <a class="enlace" href={url} target="_blank" rel="noopener me">
+                  {nombresRedes[red] ?? red}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="pie__gigante contenedor" aria-hidden="true">
+    <svg viewBox={`${caja.x - 1} ${caja.y - 1} ${caja.w + 2} ${caja.h + 2}`}>
+      {logotipo.letras.map((l) => <g class="pie__letra-caja"><path class={l.letra === "a" ? "pie__letra pie__letra--a" : "pie__letra"} d={l.d} fill-rule="evenodd" /></g>)}
+    </svg>
+  </div>
+
+  <div class="contenedor pie__legal">
+    <p>© {anio} {sitio.nombre}. {sitio.ciudad}, {sitio.pais}.</p>
+    <p>Los nombres y logos de tecnologías y empresas mencionadas son marcas de sus respectivos dueños.</p>
+  </div>
+</footer>
+
+<style>
+  .pie {
+    position: relative;
+    padding-top: clamp(72px, 9vw, 120px);
+    border-top: 1px solid var(--linea);
+    background: var(--fondo-2);
+    overflow: hidden;
+  }
+  .pie__rejilla {
+    display: grid;
+    grid-template-columns: 1.4fr repeat(3, 1fr);
+    gap: 40px;
+  }
+  .pie__marca p {
+    margin-top: 20px;
+    max-width: 30ch;
+    color: var(--texto-2);
+  }
+  .pie__marca :global(.pie__logo) {
+    width: 190px;
+    height: auto;
+  }
+  .pie__titulo {
+    margin-bottom: 16px;
+    font-family: var(--fuente-texto);
+    font-size: var(--t-chica);
+    font-weight: 600;
+    letter-spacing: 0;
+    color: var(--texto-3);
+  }
+  .pie__col ul {
+    display: grid;
+    gap: 10px;
+  }
+  .pie__col a {
+    color: var(--texto-2);
+  }
+  .pie__col a:hover {
+    color: var(--texto);
+  }
+  .pie__gigante {
+    margin-top: clamp(56px, 8vw, 110px);
+  }
+  .pie__gigante svg {
+    width: 100%;
+    height: auto;
+    overflow: hidden;
+  }
+  .pie__letra {
+    fill: var(--texto);
+    opacity: 0.95;
+  }
+  .pie__letra--a {
+    fill: var(--rojo-logo);
+  }
+  .pie__legal {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px 24px;
+    padding-block: 28px calc(28px + env(safe-area-inset-bottom, 0px));
+    margin-top: 28px;
+    border-top: 1px solid var(--linea);
+    color: var(--texto-3);
+    font-size: var(--t-chica);
+  }
+  @media (max-width: 900px) {
+    .pie__rejilla {
+      grid-template-columns: 1fr 1fr;
+    }
+    .pie__marca {
+      grid-column: 1 / -1;
+    }
+  }
+  @media (max-width: 520px) {
+    .pie__rejilla {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

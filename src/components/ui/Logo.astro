@@ -1,0 +1,131 @@
+---
+// Logo de Synapse en SVG: el hexágono de circuito con sus burbujas y el logotipo "Synapse".
+// Las piezas tienen clases propias para animarlas. Con `animable`, además se dibujan las 5 esquirlas
+// del cuerpo y las líneas de luz de los circuitos (las usa la intro para armar el logo).
+import { marca, logotipo } from "./logo-datos";
+import { DEGRADADOS } from "./logo-colores";
+
+interface Props {
+  id: string; // único por instancia (para los degradados)
+  variante?: "completo" | "marca";
+  clase?: string;
+  titulo?: string;
+  animable?: boolean;
+}
+
+const { id, variante = "completo", clase = "", titulo = "Synapse", animable = false } = Astro.props;
+const ancho = variante === "marca" ? marca.ancho : logotipo.ancho;
+const g = { cuerpo: `logo-c-${id}`, hex: `logo-h-${id}`, burbuja: `logo-b-${id}`, brillo: `logo-brillo-${id}` };
+const d = marca.degradado;
+const envolvente = marca.envolvente.map(([x, y]) => `${x},${y}`).join(" ");
+---
+
+<svg
+  class={`logo ${clase}`}
+  viewBox={`0 0 ${ancho} ${marca.alto}`}
+  role={titulo ? "img" : undefined}
+  aria-label={titulo || undefined}
+  aria-hidden={titulo ? undefined : "true"}
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <defs>
+    <linearGradient id={g.cuerpo} gradientUnits="userSpaceOnUse" x1={d.x1} y1={d.y1} x2={d.x2} y2={d.y2}>
+      {DEGRADADOS.cuerpo.map(([o, c]) => <stop offset={o} stop-color={c} />)}
+    </linearGradient>
+    <linearGradient id={g.hex} x1="0" y1="1" x2="1" y2="0">
+      {DEGRADADOS.hexagono.map(([o, c]) => <stop offset={o} stop-color={c} />)}
+    </linearGradient>
+    <linearGradient id={g.burbuja} x1="0" y1="1" x2="1" y2="0">
+      {DEGRADADOS.burbuja.map(([o, c]) => <stop offset={o} stop-color={c} />)}
+    </linearGradient>
+    {
+      animable && (
+        <filter id={g.brillo} x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="1.4" result="b" />
+          <feMerge>
+            <feMergeNode in="b" />
+            <feMergeNode in="b" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      )
+    }
+  </defs>
+  <g class="logo__marca">
+    <path class="logo__cuerpo" d={marca.cuerpo} fill={`url(#${g.cuerpo})`}></path>
+    {
+      animable && (
+        <g class="logo__esquirlas">
+          {marca.esquirlas.map((e) => (
+            <path class="logo__esquirla" data-esquirla={e.id} d={e.d} fill={`url(#${g.cuerpo})`} />
+          ))}
+        </g>
+      )
+    }
+    {
+      animable &&
+        marca.trazos.map((t) => (
+          <path
+            class="logo__trazo"
+            data-largo={t.largo}
+            data-nodo={t.nodo}
+            d={t.d}
+            fill="none"
+            stroke-linecap="round"
+            filter={`url(#${g.brillo})`}
+          />
+        ))
+    }
+    {animable && <polygon class="logo__onda" points={envolvente} fill="none" />}
+    {marca.nodos.map((n) => <circle class="logo__nodo" cx={n.cx} cy={n.cy} r={n.r} fill={`url(#${g.cuerpo})`} />)}
+    <path class="logo__hex" d={marca.hexagono.d} fill={`url(#${g.hex})`}></path>
+    {marca.burbujas.map((b) => <circle class="logo__burbuja" cx={b.cx} cy={b.cy} r={b.r} fill={`url(#${g.burbuja})`} />)}
+  </g>
+  {
+    variante === "completo" && (
+      <>
+        <rect
+          class="logo__divisor"
+          x={logotipo.divisor.x}
+          y={logotipo.divisor.y}
+          width={logotipo.divisor.w}
+          height={logotipo.divisor.h}
+          rx={logotipo.divisor.w / 2}
+        />
+        <g class="logo__texto">
+          {logotipo.letras.map((l) => (
+            <path class={l.letra === "a" ? "logo__letra logo__letra--a" : "logo__letra"} d={l.d} fill-rule="evenodd" />
+          ))}
+        </g>
+      </>
+    )
+  }
+</svg>
+
+<style>
+  .logo {
+    color: var(--tinta);
+    overflow: visible;
+  }
+  .logo__letra,
+  .logo__divisor {
+    fill: currentColor;
+    transition: fill 0.4s var(--ease-suave);
+  }
+  .logo__letra--a {
+    fill: var(--rojo-logo);
+  }
+  .logo__esquirlas,
+  .logo__trazo,
+  .logo__onda {
+    visibility: hidden;
+  }
+  .logo__onda {
+    stroke: var(--pulso-logo);
+    stroke-width: 0.9;
+  }
+  .logo__trazo {
+    stroke: var(--pulso-logo);
+    stroke-width: 1.15;
+  }
+</style>

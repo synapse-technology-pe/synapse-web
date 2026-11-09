@@ -1,0 +1,308 @@
+---
+// Servicios: cuatro capítulos que se recorren con el scroll sobre la escena 3D de dispositivos.
+import Icono from "../../components/ui/Icono.astro";
+import Logo from "../../components/ui/Logo.astro";
+import { servicios } from "../../data/servicios";
+
+const iconos = { web: "monitor", movil: "smartphone", saas: "layout-dashboard", ia: "sparkles" } as const;
+---
+
+<section class="servicios" id="soluciones" data-servicios aria-labelledby="servicios-titulo">
+  <div class="servicios__escenario" data-servicios-escenario>
+    <div class="contenedor servicios__rejilla">
+      <div class="servicios__texto">
+        <div class="servicios__cabeza">
+          <p class="etiqueta">En acción</p>
+          <h2 class="servicios__titulo" id="servicios-titulo">Así se ve el software que <em class="acento">construimos</em></h2>
+        </div>
+        <div class="servicios__capitulos">
+          {
+            servicios.map((s, i) => (
+              <article class="capitulo" data-capitulo>
+                <div class="capitulo__cabeza">
+                  <span class="capitulo__icono">
+                    <Icono nombre={iconos[s.id]} />
+                  </span>
+                  <span class="capitulo__num">0{i + 1} / 04</span>
+                </div>
+                <h3 class="capitulo__titulo">{s.titulo}</h3>
+                <p class="capitulo__texto">{s.resumen}</p>
+                <ul class="capitulo__ejemplos">
+                  {s.ejemplos.map((e) => (
+                    <li>{e}</li>
+                  ))}
+                </ul>
+              </article>
+            ))
+          }
+        </div>
+        <div class="servicios__indice" role="group" aria-label="Ir a un servicio">
+          {
+            servicios.map((s, i) => (
+              <button type="button" class="servicios__marca" data-capitulo-marca aria-label={`Ir a ${s.titulo}`}>
+                <span>0{i + 1}</span>
+                <i />
+              </button>
+            ))
+          }
+        </div>
+      </div>
+      <div class="servicios__visual">
+        <div class="servicios__respaldo" aria-hidden="true">
+          <Logo id="servicios-respaldo" variante="marca" titulo="" />
+        </div>
+        <canvas class="servicios__lienzo" data-servicios-lienzo aria-hidden="true"></canvas>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .servicios {
+    position: relative;
+    background: var(--fondo);
+  }
+  .servicios__escenario {
+    position: relative;
+    height: 100vh;
+    height: 100svh;
+    overflow: hidden;
+  }
+  .servicios__escenario::before {
+    content: "";
+    position: absolute;
+    right: -10%;
+    top: 50%;
+    width: 60vw;
+    aspect-ratio: 1;
+    translate: 0 -50%;
+    border-radius: 50%;
+    background: radial-gradient(circle, color-mix(in srgb, var(--rojo) 16%, transparent), transparent 65%);
+    pointer-events: none;
+  }
+  .servicios__rejilla {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    align-items: center;
+    gap: 40px;
+    height: 100%;
+    padding-top: var(--nav-alto);
+  }
+  .servicios__titulo {
+    margin-top: 16px;
+    font-size: clamp(1.9rem, 1.2rem + 2.2vw, 3.3rem);
+    max-width: 14ch;
+  }
+  .servicios__capitulos {
+    display: grid;
+    margin-top: clamp(28px, 5vh, 52px);
+  }
+  :global(html.js:not(.movimiento-reducido)) .capitulo {
+    grid-area: 1 / 1;
+  }
+  :global(html.js:not(.movimiento-reducido)) .capitulo:not(:first-child) {
+    visibility: hidden;
+    opacity: 0;
+  }
+  .capitulo__cabeza {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .capitulo__icono {
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+    background: color-mix(in srgb, var(--rojo) 14%, transparent);
+    color: var(--rojo-texto);
+  }
+  .capitulo__num {
+    font-size: var(--t-chica);
+    font-weight: 600;
+    color: var(--texto-3);
+    font-variant-numeric: tabular-nums;
+  }
+  .capitulo__titulo {
+    margin-top: 20px;
+    font-size: var(--t-h3);
+    letter-spacing: -0.03em;
+  }
+  .capitulo__texto {
+    margin-top: 12px;
+    max-width: 44ch;
+    color: var(--texto-2);
+  }
+  .capitulo__ejemplos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 20px;
+  }
+  .capitulo__ejemplos li {
+    padding: 6px 14px;
+    border: 1px solid var(--linea-fuerte);
+    border-radius: var(--radio-pildora);
+    font-size: var(--t-chica);
+    color: var(--texto-2);
+  }
+  .servicios__indice {
+    display: flex;
+    gap: 10px;
+    margin-top: clamp(28px, 5vh, 48px);
+  }
+  .servicios__marca {
+    display: grid;
+    gap: 8px;
+    flex: 1;
+    max-width: 96px;
+    padding: 4px 0;
+    border: 0;
+    background: none;
+    color: var(--texto-3);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-align: left;
+    transition: color 0.3s;
+  }
+  .servicios__marca i {
+    position: relative;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--linea-fuerte);
+    overflow: hidden;
+  }
+  .servicios__marca i::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--rojo);
+    transform: scaleX(var(--llenado, 0));
+    transform-origin: left center;
+  }
+  .servicios__marca.activa,
+  .servicios__marca:hover {
+    color: var(--texto);
+  }
+
+  .servicios__visual {
+    position: relative;
+    height: 100%;
+    margin-right: calc(-1 * var(--margen));
+  }
+  .servicios__lienzo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 0.9s var(--ease-suave);
+  }
+  :global(.servicios--3d) .servicios__lienzo {
+    opacity: 1;
+  }
+  .servicios__respaldo {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: min(30%, 220px);
+    translate: -50% -50%;
+    opacity: 0.9;
+    transition: opacity 0.6s;
+  }
+  .servicios__respaldo :global(.logo) {
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 24px 50px var(--brillo-rojo));
+  }
+  :global(.servicios--3d) .servicios__respaldo {
+    opacity: 0;
+  }
+
+  @media (max-width: 899px) {
+    .servicios__rejilla {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto minmax(0, 1fr) auto auto;
+      grid-template-areas: "cabeza" "visual" "capitulos" "indice";
+      align-items: stretch;
+      gap: 10px;
+      padding-top: calc(var(--nav-alto) + 4px);
+      padding-bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+    }
+    .servicios__texto {
+      display: contents;
+    }
+    .servicios__cabeza {
+      grid-area: cabeza;
+    }
+    .servicios__titulo {
+      margin-top: 8px;
+      font-size: 1.6rem;
+      max-width: none;
+    }
+    .servicios__visual {
+      grid-area: visual;
+      margin-inline: calc(-1 * var(--margen));
+      min-height: 0;
+    }
+    .servicios__capitulos {
+      grid-area: capitulos;
+      margin-top: 0;
+    }
+    .capitulo__icono {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+    }
+    .capitulo__titulo {
+      margin-top: 10px;
+      font-size: 1.3rem;
+    }
+    .capitulo__texto {
+      margin-top: 6px;
+      font-size: 0.94rem;
+      line-height: 1.5;
+    }
+    .capitulo__ejemplos {
+      margin-top: 12px;
+      gap: 6px;
+    }
+    .capitulo__ejemplos li {
+      padding: 4px 11px;
+      font-size: 0.8rem;
+    }
+    .servicios__indice {
+      grid-area: indice;
+      margin-top: 6px;
+    }
+    .servicios__marca {
+      max-width: none;
+    }
+  }
+
+  :global(html.movimiento-reducido) .servicios__escenario,
+  :global(html:not(.js)) .servicios__escenario {
+    height: auto;
+    padding-block: 120px 80px;
+  }
+  :global(html.movimiento-reducido) .servicios__rejilla,
+  :global(html:not(.js)) .servicios__rejilla {
+    align-items: start;
+  }
+  :global(html.movimiento-reducido) .servicios__capitulos,
+  :global(html:not(.js)) .servicios__capitulos {
+    gap: 40px;
+  }
+  :global(html.movimiento-reducido) .servicios__visual,
+  :global(html:not(.js)) .servicios__visual {
+    position: sticky;
+    top: 80px;
+    height: 70vh;
+  }
+  :global(html.movimiento-reducido) .servicios__indice,
+  :global(html:not(.js)) .servicios__indice {
+    display: none;
+  }
+</style>

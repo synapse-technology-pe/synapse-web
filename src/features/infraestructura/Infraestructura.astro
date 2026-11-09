@@ -1,0 +1,297 @@
+---
+// Infraestructura: una pila isométrica que se arma capa por capa (nube → tu sistema) con el scroll,
+// más los proveedores con los que trabajamos y las prácticas de seguridad.
+import Icono from "../../components/ui/Icono.astro";
+import { capas, practicas } from "../../data/infraestructura";
+---
+
+<section class="infra" id="infraestructura" data-infra aria-labelledby="infra-titulo">
+  <div class="infra__escenario" data-infra-escenario>
+    <div class="contenedor infra__rejilla">
+      <div class="infra__texto">
+        <p class="etiqueta">Infraestructura</p>
+        <h2 class="titulo-seccion" id="infra-titulo">Infraestructura en la nube para cada sistema</h2>
+        <p class="texto-seccion">
+          Desplegamos tu sistema en servidores de Oracle Cloud o Microsoft Azure y lo conectamos con servicios externos,
+          como las APIs de BCP.
+        </p>
+        <ol class="infra__lista">
+          {
+            capas.map((c, i) => (
+              <li class="infra__item" data-infra-item>
+                <span class="infra__num">0{i + 1}</span>
+                <div>
+                  <h3>{c.titulo}</h3>
+                  <p>{c.texto}</p>
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+        <ul class="infra__practicas">
+          {
+            practicas.map((p) => (
+              <li>
+                <Icono nombre="shield-check" />
+                {p}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div class="infra__visual">
+        <div class="pila" data-pila aria-hidden="true">
+          {
+            capas.map((c, i) => (
+              <div class={`pila__capa ${i === capas.length - 1 ? "pila__capa--cima" : ""}`} data-capa style={`--i:${i}`}>
+                <div class="pila__lado" />
+                <div class="pila__placa">
+                  <span class="pila__titulo">{c.titulo}</span>
+                  <span class="pila__sub">{c.placa}</span>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+        <div class="infra__marcas">
+          <span class="infra__marcas-titulo">Desplegamos e integramos con</span>
+          <ul>
+            <li class="infra__marca" aria-label="Oracle Cloud"><Icono nombre="oracle" clase="infra__logo infra__logo--oracle" /></li>
+            <li class="infra__marca"><Icono nombre="azure" clase="infra__logo" /><span>Microsoft Azure</span></li>
+            <li class="infra__marca"><Icono nombre="aws" clase="infra__logo infra__logo--ancho" /></li>
+            <li class="infra__marca"><Icono nombre="google-cloud" clase="infra__logo" /><span>Google Cloud</span></li>
+            <li class="infra__marca"><span class="infra__bcp">BCP</span><span>APIs</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .infra {
+    position: relative;
+    background: var(--fondo);
+  }
+  .infra__escenario {
+    display: flex;
+    align-items: center;
+    min-height: 100vh;
+    min-height: 100svh;
+    padding-block: calc(var(--nav-alto) + 28px) 48px;
+    overflow: hidden;
+  }
+  .infra__rejilla {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(32px, 5vw, 80px);
+  }
+  .infra .titulo-seccion {
+    font-size: clamp(1.9rem, 1.2rem + 2.3vw, 3.4rem);
+    max-width: 15ch;
+  }
+  .infra .texto-seccion {
+    margin-top: 16px;
+    font-size: 1.05rem;
+  }
+  .infra__lista {
+    display: grid;
+    gap: 2px;
+    margin-top: 26px;
+  }
+  .infra__item {
+    display: grid;
+    grid-template-columns: 34px 1fr;
+    gap: 10px;
+    padding: 9px 0 9px 14px;
+    border-left: 2px solid var(--linea);
+    transition:
+      border-color 0.4s,
+      opacity 0.4s;
+  }
+  .infra__item h3 {
+    font-family: var(--fuente-texto);
+    font-size: 0.98rem;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+  }
+  .infra__item p {
+    font-size: 0.88rem;
+    color: var(--texto-2);
+    line-height: 1.45;
+  }
+  .infra__num {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--texto-3);
+    padding-top: 2px;
+  }
+  :global(html.js:not(.movimiento-reducido)) .infra__item {
+    opacity: 0.45;
+  }
+  :global(html.js) .infra__item.activo {
+    opacity: 1;
+    border-color: var(--rojo);
+  }
+  .infra__item.activo .infra__num {
+    color: var(--rojo-texto);
+  }
+  .infra__marcas {
+    display: grid;
+    justify-items: center;
+    text-align: center;
+  }
+  .infra__marcas-titulo {
+    font-size: var(--t-chica);
+    color: var(--texto-3);
+  }
+  .infra__marcas ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 12px;
+  }
+  .infra__marca {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 46px;
+    padding: 0 18px;
+    border-radius: 14px;
+    background: #fff;
+    color: #0b0b0d;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border: 1px solid var(--linea);
+  }
+  .infra__marca :global(.infra__logo) {
+    width: 24px;
+    height: 24px;
+  }
+  .infra__marca :global(.infra__logo--oracle) {
+    width: 104px;
+    height: 14px;
+  }
+  .infra__marca :global(.infra__logo--ancho) {
+    width: 40px;
+  }
+  .infra__bcp {
+    font-family: var(--fuente-texto);
+    font-size: 1.05rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: #002a8d;
+  }
+
+  .infra__visual {
+    display: grid;
+    justify-items: center;
+    gap: 22px;
+  }
+  .pila {
+    position: relative;
+    width: min(100%, 440px);
+    height: clamp(330px, 54vh, 470px);
+  }
+  .pila__capa {
+    position: absolute;
+    left: 50%;
+    bottom: calc(var(--i) * 14%);
+    width: clamp(160px, 46%, 205px);
+    aspect-ratio: 1;
+    translate: -50% 0;
+    z-index: var(--i);
+  }
+  .pila__placa,
+  .pila__lado {
+    position: absolute;
+    inset: 0;
+    border-radius: 22px;
+    transform: rotateX(58deg) rotateZ(-45deg);
+  }
+  .pila__lado {
+    translate: 0 14px;
+    background: color-mix(in srgb, var(--superficie-3) 80%, #000);
+    border: 1px solid var(--linea-fuerte);
+  }
+  /* El texto va en la esquina que queda al frente (abajo), visible aunque la capa de arriba la tape */
+  .pila__placa {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-start;
+    padding: 0 0 16px 18px;
+    border: 1px solid var(--linea-fuerte);
+    background: linear-gradient(135deg, var(--superficie-3), var(--superficie));
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+  }
+  .pila__titulo {
+    font-family: var(--fuente-mono);
+    font-size: 0.92rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+  }
+  .pila__sub {
+    margin-top: 4px;
+    font-size: 0.78rem;
+    color: var(--texto-2);
+  }
+  .pila__capa--cima .pila__placa {
+    border-color: rgba(255, 90, 90, 0.6);
+    background: linear-gradient(135deg, #ff2a2a, #8f0a10);
+    box-shadow: 0 0 60px var(--brillo-rojo);
+  }
+  .pila__capa--cima .pila__lado {
+    background: #5a060b;
+    border-color: rgba(255, 90, 90, 0.4);
+  }
+  .pila__capa--cima .pila__titulo,
+  .pila__capa--cima .pila__sub {
+    color: #fff;
+  }
+  .infra__practicas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 22px;
+  }
+  @media (min-width: 900px) and (max-height: 860px) {
+    .infra__item p {
+      display: none;
+    }
+    .infra__lista {
+      margin-top: 18px;
+    }
+  }
+  .infra__practicas li {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 14px;
+    border: 1px solid var(--linea-fuerte);
+    border-radius: var(--radio-pildora);
+    font-size: 0.82rem;
+    color: var(--texto-2);
+  }
+  .infra__practicas :global(.icono) {
+    width: 16px;
+    height: 16px;
+    color: var(--rojo-texto);
+  }
+
+  @media (max-width: 899px) {
+    .infra__rejilla {
+      grid-template-columns: 1fr;
+    }
+    .infra__visual {
+      order: -1;
+    }
+    .pila {
+      height: 360px;
+    }
+  }
+</style>

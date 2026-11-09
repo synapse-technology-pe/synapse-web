@@ -1,0 +1,68 @@
+---
+// Datos estructurados (schema.org) para que Google entienda qué es Synapse,
+// qué servicios ofrece, el video de presentación y las preguntas frecuentes.
+import { sitio } from "../../data/sitio";
+import { servicios } from "../../data/servicios";
+import { preguntas } from "../../data/preguntas";
+
+const base = Astro.site;
+const abs = (ruta: string) => (base ? new URL(ruta, base).href : ruta);
+const redes = Object.values(sitio.redes).filter(Boolean);
+
+const negocio: Record<string, unknown> = {
+  "@type": "ProfessionalService",
+  "@id": abs("/#negocio"),
+  name: sitio.nombre,
+  description: sitio.descripcion,
+  url: abs("/"),
+  logo: abs("/logo-synapse.png"),
+  image: abs("/og.jpg"),
+  address: { "@type": "PostalAddress", addressLocality: sitio.ciudad, addressCountry: "PE" },
+  areaServed: { "@type": "Country", name: sitio.pais },
+  knowsAbout: [
+    "Desarrollo de software a medida",
+    "Sistemas web",
+    "Aplicaciones móviles",
+    "Plataformas SaaS",
+    "Inteligencia artificial",
+    "Oracle Cloud",
+    "Microsoft Azure",
+  ],
+  hasOfferCatalog: {
+    "@type": "OfferCatalog",
+    name: "Servicios de desarrollo de software",
+    itemListElement: servicios.map((s) => ({
+      "@type": "Offer",
+      itemOffered: { "@type": "Service", name: s.titulo, description: s.resumen, areaServed: "PE" },
+    })),
+  },
+};
+if (redes.length) negocio.sameAs = redes;
+if (sitio.correo) negocio.email = sitio.correo;
+if (sitio.whatsapp) negocio.telephone = `+${sitio.whatsapp}`;
+
+const grafo = {
+  "@context": "https://schema.org",
+  "@graph": [
+    negocio,
+    {
+      "@type": "WebSite",
+      "@id": abs("/#web"),
+      url: abs("/"),
+      name: sitio.nombre,
+      inLanguage: "es-PE",
+      publisher: { "@id": abs("/#negocio") },
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: preguntas.map((p) => ({
+        "@type": "Question",
+        name: p.pregunta,
+        acceptedAnswer: { "@type": "Answer", text: p.respuesta },
+      })),
+    },
+  ],
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(grafo)} />

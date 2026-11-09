@@ -1,0 +1,181 @@
+/* Componentes compartidos: botones, chips, tarjetas y estados de hover. */
+
+.boton {
+  --b-fondo: var(--rojo);
+  --b-texto: #fff;
+  --b-borde: transparent;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 0 26px;
+  border: 1px solid var(--b-borde);
+  border-radius: var(--radio-pildora);
+  background: var(--b-fondo);
+  color: var(--b-texto);
+  font-family: var(--fuente-mono);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  isolation: isolate;
+  overflow: hidden;
+  transition:
+    transform 0.35s var(--ease-salida),
+    background-color 0.3s var(--ease-suave),
+    border-color 0.3s var(--ease-suave),
+    box-shadow 0.35s var(--ease-salida);
+}
+
+.boton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(120px circle at var(--mx, 50%) var(--my, 50%), rgba(255, 255, 255, 0.28), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.boton:hover {
+  transform: translateY(-2px);
+}
+
+.boton:hover::after {
+  opacity: 1;
+}
+
+.boton:active {
+  transform: translateY(0) scale(0.97);
+  transition-duration: 0.1s;
+}
+
+.boton--primario {
+  box-shadow: 0 12px 34px var(--brillo-rojo);
+}
+
+.boton--primario:hover {
+  --b-fondo: var(--rojo-vivo);
+  box-shadow: 0 16px 44px var(--brillo-rojo);
+}
+
+.boton--secundario {
+  --b-fondo: transparent;
+  --b-texto: var(--texto);
+  --b-borde: var(--linea-fuerte);
+}
+
+.boton--secundario::after {
+  background: radial-gradient(120px circle at var(--mx, 50%) var(--my, 50%), var(--linea-fuerte), transparent 70%);
+}
+
+.boton--secundario:hover {
+  --b-borde: var(--texto-2);
+}
+
+.boton--chico {
+  min-height: 42px;
+  padding: 0 18px;
+  font-size: 0.9rem;
+}
+
+.boton__flecha {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.35s var(--ease-salida);
+}
+
+.boton:hover .boton__flecha {
+  transform: translateX(4px);
+}
+
+/* Chip */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 34px;
+  padding: 0 14px;
+  border: 1px solid var(--linea-fuerte);
+  border-radius: var(--radio-pildora);
+  background: color-mix(in srgb, var(--superficie) 70%, transparent);
+  color: var(--texto-2);
+  font-size: var(--t-chica);
+  font-weight: 500;
+  white-space: nowrap;
+  backdrop-filter: blur(10px);
+}
+html.calidad-baja .chip {
+  backdrop-filter: none;
+}
+
+.chip__punto {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--rojo);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--rojo) 22%, transparent);
+}
+
+/* Tarjeta */
+.tarjeta {
+  position: relative;
+  border: 1px solid var(--linea);
+  border-radius: var(--radio-l);
+  background: var(--superficie);
+  transition:
+    transform 0.4s var(--ease-salida),
+    border-color 0.3s var(--ease-suave),
+    background-color 0.4s var(--ease-suave);
+}
+
+.tarjeta--luz::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 0%), color-mix(in srgb, var(--rojo) 14%, transparent), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.tarjeta--luz:hover::before {
+  opacity: 1;
+}
+
+a.tarjeta:hover,
+.tarjeta--elevable:hover {
+  transform: translateY(-2px);
+  border-color: var(--linea-fuerte);
+}
+
+/* Enlace con subrayado que se dibuja */
+.enlace {
+  background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+  transition: background-size 0.4s var(--ease-salida), color 0.25s;
+}
+
+.enlace:hover {
+  background-size: 100% 1px;
+}
+
+/* Ícono relleno (estrellas, play): pinta el trazo y el interior */
+.icono-relleno path {
+  fill: currentColor;
+}
+
+/* Ícono de línea */
+.icono {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}

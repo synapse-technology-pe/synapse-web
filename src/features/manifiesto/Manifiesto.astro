@@ -1,0 +1,83 @@
+---
+// Frase de posicionamiento que se ilumina palabra por palabra mientras haces scroll.
+const pilares = [
+  { titulo: "Código propio", texto: "Programado para tu empresa, sin plantillas." },
+  { titulo: "Diseño con tu marca", texto: "Pantallas pensadas para tus clientes y tu equipo." },
+  { titulo: "Listo para crecer", texto: "Nuevos módulos y usuarios sin rehacer el sistema." },
+];
+---
+
+<section class="manifiesto" data-manifiesto aria-labelledby="manifiesto-titulo">
+  <div class="contenedor manifiesto__interior">
+    <p class="etiqueta">Por qué Synapse</p>
+    <h2 class="manifiesto__frase" id="manifiesto-titulo" data-manifiesto-frase>
+      No vendemos plantillas. Construimos el <em class="acento">software exacto</em> que tu negocio necesita, con tu
+      marca, tus procesos y espacio para crecer.
+    </h2>
+    <ul class="manifiesto__pilares">
+      {
+        pilares.map((p, i) => (
+          <li class="manifiesto__pilar" data-manifiesto-pilar>
+            <span class="manifiesto__num">0{i + 1}</span>
+            <h3>{p.titulo}</h3>
+            <p>{p.texto}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .manifiesto {
+    position: relative;
+    display: grid;
+    align-items: center;
+    min-height: 100vh;
+    min-height: 100svh;
+    padding-block: calc(var(--nav-alto) + 40px) 64px;
+    background: var(--fondo);
+  }
+  .manifiesto__frase {
+    margin-top: 28px;
+    max-width: 20ch;
+    font-size: clamp(2.3rem, 0.9rem + 4.4vw, 5.6rem);
+    font-weight: 650;
+    line-height: 1.02;
+    letter-spacing: -0.045em;
+  }
+  .manifiesto__frase :global(.palabra) {
+    opacity: 0.16;
+  }
+  .manifiesto__clave {
+    color: var(--rojo-texto);
+  }
+  .manifiesto__pilares {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: clamp(48px, 7vw, 88px);
+    padding-top: 28px;
+    border-top: 1px solid var(--linea);
+  }
+  .manifiesto__num {
+    font-size: var(--t-chica);
+    font-weight: 700;
+    color: var(--rojo-texto);
+  }
+  .manifiesto__pilar h3 {
+    margin-top: 10px;
+    font-size: 1.25rem;
+    letter-spacing: -0.02em;
+  }
+  .manifiesto__pilar p {
+    margin-top: 6px;
+    color: var(--texto-2);
+  }
+  @media (max-width: 760px) {
+    .manifiesto__pilares {
+      grid-template-columns: 1fr;
+      gap: 18px;
+    }
+  }
+</style>

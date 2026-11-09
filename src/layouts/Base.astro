@@ -1,0 +1,72 @@
+---
+// Estructura común de la página: <head> con SEO, fuentes y tema; menú, intro, pie y capas globales.
+import "@fontsource/anton/400.css";
+import "@fontsource-variable/geist/wght.css";
+import "@fontsource-variable/geist-mono/wght.css";
+import fuenteTitulos from "@fontsource/anton/files/anton-latin-400-normal.woff2?url";
+import fuenteTexto from "@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url";
+import fuenteMono from "@fontsource-variable/geist-mono/files/geist-mono-latin-wght-normal.woff2?url";
+import "../styles/tokens.css";
+import "../styles/base.css";
+import "../styles/componentes.css";
+import Seo from "../components/seo/Seo.astro";
+import DatosEstructurados from "../components/seo/DatosEstructurados.astro";
+import Nav from "../components/layout/Nav.astro";
+import Intro from "../components/layout/Intro.astro";
+import Footer from "../components/layout/Footer.astro";
+import CapasGlobales from "../components/layout/CapasGlobales.astro";
+
+interface Props {
+  titulo?: string;
+  descripcion?: string;
+  conIntro?: boolean;
+  indexar?: boolean;
+}
+
+const { titulo, descripcion, conIntro = true, indexar = true } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es-PE" data-tema="oscuro">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <Seo titulo={titulo} descripcion={descripcion} indexar={indexar} />
+    <link rel="preload" href={fuenteTitulos} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={fuenteTexto} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={fuenteMono} as="font" type="font/woff2" crossorigin />
+    <script is:inline define:vars={{ conIntro }}>
+      // Antes de pintar: tema guardado, intro solo en la primera visita de la sesión.
+      (function () {
+        var d = document.documentElement;
+        d.classList.add("js");
+        try {
+          var t = localStorage.getItem("synapse-tema");
+          if (t === "claro" || t === "oscuro") d.dataset.tema = t;
+        } catch (e) {}
+        var reducido = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        if (reducido) d.classList.add("movimiento-reducido");
+        var vista = false;
+        try {
+          vista = sessionStorage.getItem("synapse-intro") === "1";
+        } catch (e) {}
+        if (conIntro && !reducido && !vista) d.classList.add("con-intro");
+        if (!reducido) d.classList.add("anim-heroe");
+      })();
+    </script>
+    <DatosEstructurados />
+  </head>
+  <body>
+    <a class="saltar" href="#contenido">Saltar al contenido</a>
+    {conIntro && <Intro />}
+    <Nav />
+    <main id="contenido">
+      <slot />
+    </main>
+    <Footer />
+    <CapasGlobales />
+    <script>
+      import "../scripts/app";
+    </script>
+  </body>
+</html>

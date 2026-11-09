@@ -1,0 +1,120 @@
+---
+// Preguntas frecuentes en acordeón (<details>, accesible y visible para buscadores).
+import Icono from "../../components/ui/Icono.astro";
+import { preguntas } from "../../data/preguntas";
+---
+
+<section class="preguntas seccion" id="preguntas" aria-labelledby="preguntas-titulo">
+  <div class="contenedor preguntas__rejilla">
+    <div class="preguntas__cabeza">
+      <p class="etiqueta">Preguntas frecuentes</p>
+      <h2 class="titulo-seccion" id="preguntas-titulo">Preguntas antes de empezar</h2>
+      <p class="texto-seccion">Si tu duda no está aquí, escríbenos y te respondemos.</p>
+      <a class="boton boton--secundario" href="#contacto">
+        Escribir a Synapse
+        <Icono nombre="arrow-right" clase="icono boton__flecha" />
+      </a>
+    </div>
+    <div class="preguntas__lista">
+      {
+        preguntas.map((p) => (
+          <details class="pregunta" data-pregunta>
+            <summary>
+              <h3>{p.pregunta}</h3>
+              <span class="pregunta__signo" aria-hidden="true">
+                <Icono nombre="plus" />
+              </span>
+            </summary>
+            <div class="pregunta__respuesta">
+              <p>{p.respuesta}</p>
+            </div>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .preguntas__rejilla {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: clamp(32px, 6vw, 96px);
+    align-items: start;
+  }
+  .preguntas__cabeza {
+    position: sticky;
+    top: calc(var(--nav-alto) + 32px);
+  }
+  .preguntas__cabeza .boton {
+    margin-top: 30px;
+  }
+  .preguntas__lista {
+    border-top: 1px solid var(--linea);
+  }
+  .pregunta {
+    border-bottom: 1px solid var(--linea);
+  }
+  .pregunta summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 26px 0;
+    cursor: pointer;
+    list-style: none;
+  }
+  .pregunta summary::-webkit-details-marker {
+    display: none;
+  }
+  .pregunta h3 {
+    font-family: var(--fuente-texto);
+    font-size: clamp(1.05rem, 1rem + 0.3vw, 1.2rem);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.35;
+    transition: color 0.25s;
+  }
+  .pregunta summary:hover h3 {
+    color: var(--rojo-texto);
+  }
+  .pregunta__signo {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    flex: none;
+    border: 1px solid var(--linea-fuerte);
+    border-radius: 50%;
+    transition:
+      transform 0.45s var(--ease-salida),
+      background-color 0.3s,
+      border-color 0.3s;
+  }
+  .pregunta__signo :global(.icono) {
+    width: 18px;
+    height: 18px;
+  }
+  .pregunta[open] .pregunta__signo {
+    transform: rotate(45deg);
+    background: var(--rojo);
+    border-color: var(--rojo);
+    color: #fff;
+  }
+  .pregunta__respuesta {
+    overflow: hidden;
+  }
+  .pregunta__respuesta p {
+    padding-bottom: 26px;
+    max-width: 62ch;
+    color: var(--texto-2);
+  }
+  @media (max-width: 899px) {
+    .preguntas__rejilla {
+      grid-template-columns: 1fr;
+    }
+    .preguntas__cabeza {
+      position: static;
+    }
+  }
+</style>

@@ -1,0 +1,15 @@
+node_modules/
+dist/
+.astro/
+.env
+.env.*
+!.env.example
+.vercel/
+*.log
+.DS_Store
+
+.vercel
+
+# Archivos locales que no son parte de la web
+.claude/
+Documentos Borrados/
